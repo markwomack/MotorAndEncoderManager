@@ -4,9 +4,9 @@ It is mostly appropriate for mobile robot applications.</p>
 
 ## Overview
 <p>Mobile robots most often use motors to move around. There is a plethora of motor
-control hardware out there, each with its own API. When using motors to move around
+control hardware out there, each with its own API. When using motors to move around,
 many robots also use associated encoders to track how much a motor (and thus an
-attached wheel) has moved. Hall sensor quadrature encoders are the most common type
+attached wheel) has moved. A hall sensor quadrature encoder is the most common type
 of encoder available (either built-in or as an add-on), but others are becoming more
 common (such as 3-phase encoders on eScooter motors). The MotorAndEncoderManager
 provides an API for motors and encoders that abstracts the specifics of the motor
