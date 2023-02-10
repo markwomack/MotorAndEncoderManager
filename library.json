@@ -1,0 +1,19 @@
+{
+    "name": "MotorAndEncoderManager",
+    "keywords": "motor, encoder, robot, robotics ",
+    "description": "A library that provides support for controlling motors and associated encoders. Appropriate for mobile robot applications.",
+    "repository":
+    {
+      "type": "git",
+      "url": "https://github.com/markwomack/MotorAndEncoderManager"
+    },
+    "authors":
+    {
+      "name": "Mark Womack",
+      "url": "https://github.com/markwomack",
+      "maintainer": true
+    },
+    "homepage": "https://github.com/markwomack/MotorAndEncoderManager",
+    "version": "0.0.1",
+    "frameworks": "arduino"
+  }
