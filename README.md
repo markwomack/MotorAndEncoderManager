@@ -1,6 +1,6 @@
 # MotorAndEncoderManager
 <p>A library that provides support for controlling motors and associated encoders.
-It is most appropriate for mobile robot applications.</p>
+It is mostly appropriate for mobile robot applications.</p>
 
 ## Overview
 <p>Mobile robots most often use motors to move around. There is a plethora of motor
