@@ -3,28 +3,32 @@
 // See accompanying LICENSE file for details.
 //
 
-// This is an example of using the PololuQik2s9v1 motor
-// controller with two motors, each with a quadrature motor
-// encoder.
+// This is an example of using the Ghost Motor Contoller
+// which is a controller of two BLDC hoverboard-like
+// with 3-phase motor encoders.
 
 // Arduino includes
 #include <Arduino.h>
 
 // MotorManager includes
 #include <MotorAndEncoderManager.h>
-#include <PololuQik2s9v1MotorManager.h>
-#include <TeensyQuadratureMotorEncoder.h>
+#include <GhostMotorManager.h>
+#include <ThreePhaseMotorEncoder.h>
 
-// Pin Definitions - Defines all of the pins used
-const uint8_t POLOLU_QIK_TX_PIN        =  0; // tx Pololu qik
-const uint8_t POLOLU_QIK_RX_PIN        =  1; // rx Pololu qik
-const uint8_t POLOLU_QIK_RESET_PIN     =  3; // reset Pololu qik
-const uint8_t M1_PHASE_B_PIN    = 31; // right encoder phase b signal
-const uint8_t M1_PHASE_A_PIN    = 32; // right encoder phase a signal
-const uint8_t M0_PHASE_B_PIN    = 34; // left encoder phase b signal
-const uint8_t M0_PHASE_A_PIN    = 35; // left encoder phase a signal
+const uint8_t M0_DIR_PIN(2);
+const uint8_t M0_BRAKE_PIN(3);
+const uint8_t M0_SPEED_PIN(4);
+const uint8_t M0_W_SIGNAL_PIN(5);  // green  - Hc
+const uint8_t M0_V_SIGNAL_PIN(6);  // blue   - Hb
+const uint8_t M0_U_SIGNAL_PIN(7);  // yellow - Ha
+const uint8_t M1_W_SIGNAL_PIN(8);  // green  - Hc
+const uint8_t M1_V_SIGNAL_PIN(9);  // blue   - Hb
+const uint8_t M1_U_SIGNAL_PIN(10); // yellow - Ha
+const uint8_t M1_DIR_PIN(11);
+const uint8_t M1_BRAKE_PIN(12);
+const uint8_t M1_SPEED_PIN(14);
 
-const float MAX_SPEED(1.0);
+const float MAX_SPEED(0.1);
 
 // Motor and encoder manager
 MotorAndEncoderManager* motorManager;
@@ -42,15 +46,16 @@ void setup() {
   //*** Start of implementation specific code
   
   // Setup encoders
-  TeensyQuadratureMotorEncoder* m0Encoder = new TeensyQuadratureMotorEncoder();
-  m0Encoder->begin(M0_PHASE_A_PIN, M0_PHASE_B_PIN);
-  TeensyQuadratureMotorEncoder* m1Encoder = new TeensyQuadratureMotorEncoder();
-  m1Encoder->begin(M1_PHASE_A_PIN, M1_PHASE_B_PIN);
+  ThreePhaseMotorEncoder* m0Encoder = new ThreePhaseMotorEncoder();
+  m0Encoder->begin(M0_V_SIGNAL_PIN, M0_W_SIGNAL_PIN, M0_U_SIGNAL_PIN);
+  ThreePhaseMotorEncoder* m1Encoder = new ThreePhaseMotorEncoder();
+  m1Encoder->begin(M1_V_SIGNAL_PIN, M1_W_SIGNAL_PIN, M1_U_SIGNAL_PIN);
     
   // Setup the motor manager
-  PololuQik2s9v1MotorManager* pololuQikMotorManager = new PololuQik2s9v1MotorManager();
-  pololuQikMotorManager->begin(POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
-  motorManager = (MotorAndEncoderManager*)pololuQikMotorManager;
+  GhostMotorManager* ghostMotorManager = new GhostMotorManager();
+  ghostMotorManager->begin(M0_SPEED_PIN, M0_DIR_PIN, M0_BRAKE_PIN,
+      M1_SPEED_PIN, M1_DIR_PIN, M1_BRAKE_PIN);
+  motorManager = (MotorAndEncoderManager*)ghostMotorManager;
   
   //*** End of implementation specific code
 
