@@ -48,7 +48,7 @@ void ThreePhaseMotorEncoder::begin(const uint8_t phaseVPin, const uint8_t phaseW
     // Initialize members
     _tickCount = 0;
     _faultCount = 0;
-    _direction = false;
+    _direction = CW;
     
     // Set the pin modes
     pinMode(phaseVPin, INPUT_PULLUP);
@@ -120,8 +120,8 @@ int32_t ThreePhaseMotorEncoder::readFaults(void) {
   return value;
 }
 
-bool ThreePhaseMotorEncoder::readDirection(void) {
-  bool value;
+Direction ThreePhaseMotorEncoder::readDirection(void) {
+  Direction value;
   
   noInterrupts();
   value = _direction;

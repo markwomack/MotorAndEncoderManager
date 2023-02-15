@@ -17,9 +17,6 @@ enum Motor {
   M1
 };
 
-const Motor LEFT_MOTOR(M0);
-const Motor RIGHT_MOTOR(M1);
-
 class MotorAndEncoderManager {
 
 public:

@@ -6,13 +6,17 @@
 #ifndef ThreePhaseMotorEncoder_h
 #define ThreePhaseMotorEncoder_h
 
+// Arduino includes
 #include <inttypes.h>
 
+// Local includes
+#include "MotorAndEncoderManager.h"
 #include "MotorEncoder.h"
 
-// Motor direction values
-const bool CW(false);  // clockwise, aka forward
-const bool CCW(true);  // counter-clockwise, aka reverse
+enum Direction {
+  CW  = 0,  // Clockwise - Positive motor speed
+  CCW = 1   // Counter-Clockwise - Negative motor speed
+};
 
 /*
  * An implementation of a 3-phase encoder built-in to BLDC
@@ -47,16 +51,16 @@ class ThreePhaseMotorEncoder : public MotorEncoder {
     
     /*
      * Returns the direction the motor is currently turning.
-     * See the CW and CCW constants.
+     * See the Direction enum in MotorAndEncoderManager.
      */
-    bool readDirection(void);
+    Direction readDirection(void);
     
   private:
     void handleInterrupt(const uint8_t pinNum, const uint8_t pinMask, const uint8_t pinShift);
 
     int32_t volatile _tickCount;   // Number of valid ticks counted
     int32_t volatile _faultCount;  // Number or encoder faults detected
-    bool volatile _direction;      // The current direction of the motor
+    Direction volatile _direction; // The current direction of the motor
     uint8_t volatile _state;       // The current state as determined by the encoder phase pins
 };
 

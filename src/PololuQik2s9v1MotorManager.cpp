@@ -17,7 +17,7 @@ int PololuQik2s9v1MotorManager::mapSpeed(const double input) {
 }
 
 void PololuQik2s9v1MotorManager::setMotorSpeed(const Motor motor, const double speed) {
-  if (motor == LEFT_MOTOR) {
+  if (motor == M0) {
     _qik->setM0Speed(mapSpeed(speed));
   } else {
     _qik->setM1Speed(mapSpeed(speed));
