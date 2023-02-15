@@ -12,68 +12,54 @@
 // Local includes
 #include "MotorEncoder.h"
 
-// Differentiates between two motors
-// available for differential drive robot.
-// Usually M0 refers to the left-side motor
-// (from robot POV), and M1 to the right-side,
-// but it is up to you. Just be sure to use
-// these values consistently in your robot code.
-enum MotorNum {
+enum Motor {
   M0,
   M1
 };
 
-/*
- * Defines the abstract API for interacting with motors
- * and associated encoders of a differential drive robot.
- * Implementations for specific motor controllers and
- * encoders should implement the functionality for these
- * methods.
- */
+const Motor LEFT_MOTOR(M0);
+const Motor RIGHT_MOTOR(M1);
+
 class MotorAndEncoderManager {
 
 public:
-  MotorAndEncoderManager();
 
   /*
    * Sets the speed of the given motor. Speed is expected to be a 
-   * value between -1 (reverse) and 1 (forward).
+   * value between -1 and 1.
    */
-  virtual void setMotorSpeed(const MotorNum motorNum, const float speed) = 0;
+  virtual void setMotorSpeed(const Motor motor, const double speed) = 0;
 
   /*
-   * Sets the speed of both motors. Speeds are expected to be a 
-   * value between -1 (reverse) and 1 (forward).
+   * Sets the speed of the motors. Speeds are expected to be a 
+   * value between -1 and 1.
    */
-  virtual void setMotorSpeeds(const float m0Speed, const float m1Speed) = 0;
+  virtual void setMotorSpeeds(const double m0Speed, const double m1Speed) = 0;
+  
+  /*
+   * Assigns the motor encoders.
+   */
+  void setEncoders(MotorEncoder* m0Encoder, MotorEncoder* m1Encoder);
+  
+  /*
+   * Reads the value of the given motors encoder.
+   */
+  int32_t readEncoder(const Motor motor);
+  
+  /*
+   * Reads the value of the given motors encoder and then resets the
+   * value to zero.
+   */
+  int32_t readAndResetEncoder(const Motor motor);
 
   /*
-   * Assigns the motor encoders associated with each motor.
+   * Sets the value of the given motors encoder to the given value.
    */
-  void setEncoders(MotorEncoder* m0MotorEncoder, MotorEncoder* m1MotorEncoder);
-
-  /*
-   * Reads the current value of the motors associated encoder.
-   */
-  int32_t readEncoder(const MotorNum motorNum);
-
-  /*
-   * Reads the value of the motors associated encoder and then resets the
-   * value to zero. Returns the original value.
-   */
-  int32_t readAndResetEncoder(const MotorNum motorNum);
-
-  /*
-   * Reads the value of the motors associated encoder and then sets the
-   * value. Returns the original value.
-   */
-  int32_t writeToEncoder(const MotorNum motorNum, const int32_t value);
+  int32_t writeEncoder(const Motor motor, int32_t const value);
 
 protected:
   MotorEncoder* _m0Encoder;
   MotorEncoder* _m1Encoder;
-  
-  MotorEncoder* getEncoder(const MotorNum motorNum);
 };
 
-#endif // MotorAndEncoderManager_h
+#endif  // MotorAndEncoderManager_h

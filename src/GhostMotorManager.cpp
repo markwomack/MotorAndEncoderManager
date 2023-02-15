@@ -3,8 +3,10 @@
 // See accompanying LICENSE file for details.
 //
 
+// Arduino includes
 #include <Arduino.h>
 
+// Local includes
 #include "GhostMotorManager.h"
 
 GhostMotorManager::GhostMotorManager() {
@@ -51,12 +53,12 @@ void GhostMotorManager::begin(const uint8_t m0SpeedPin, const uint8_t m0DirPin, 
 }
 
 // Make sure the input is between -1 and 1, then convert to int for speed PWM
-int GhostMotorManager::mapSpeed(const float input) {
+int GhostMotorManager::mapSpeed(const double input) {
   return (int)(min(max(input, -1.0), 1.0) * 8191);
 }
 
-void GhostMotorManager::setMotorSpeed(const MotorNum motorNum, const float speed) {
-  if (motorNum == M0) {
+void GhostMotorManager::setMotorSpeed(const Motor motor, const double speed) {
+  if (motor == M0) {
     digitalWrite(_m0BrakePin, LOW);
     analogWrite(_m0SpeedPin, abs(mapSpeed(speed)));
     digitalWrite(_m0DirPin, speed >= 0 ? LOW : HIGH);
@@ -67,7 +69,7 @@ void GhostMotorManager::setMotorSpeed(const MotorNum motorNum, const float speed
   }
 }
 
-void GhostMotorManager::setMotorSpeeds(const float m0Speed, const float m1Speed) {
+void GhostMotorManager::setMotorSpeeds(const double m0Speed, const double m1Speed) {
   setMotorSpeed(M0, m0Speed);
   setMotorSpeed(M1, m1Speed);
 }

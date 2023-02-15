@@ -27,13 +27,7 @@
  */
 class TeensyQuadratureMotorEncoder : public MotorEncoder {
   public:
-    TeensyQuadratureMotorEncoder();
-
-    /*
-     * Initializes and starts the encoder. Must be called
-     * before the MotorEncoder methods are called.
-     */
-    void begin(const int8_t phaseAPin, const int8_t phaseBPin);
+    TeensyQuadratureMotorEncoder(const int8_t phaseAPin, const int8_t phaseBPin);
     
     int32_t read(void);
     int32_t write(const int32_t value);

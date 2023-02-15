@@ -34,8 +34,9 @@ public:
   void begin(const uint8_t m0SpeedPin, const uint8_t m0DirPin, const uint8_t m0BrakePin,
       const uint8_t m1SpeedPin, const uint8_t m1DirPin, const uint8_t m1BrakePin);
 
-  void setMotorSpeed(const MotorNum motorNum, const float speed);
-  void setMotorSpeeds(const float m0Speed, const float m1Speed);
+  void setMotorSpeed(const Motor motor, const double speed);
+  void setMotorSpeeds(const double m0Speed, const double m1Speed);
+  
   
 private:
   bool _begun;
@@ -46,7 +47,7 @@ private:
   uint8_t _m1DirPin;
   uint8_t _m1BrakePin;
   
-  int mapSpeed(const float input);
+  int mapSpeed(const double input);
 };
 
 #endif // GhostMotorManager_h

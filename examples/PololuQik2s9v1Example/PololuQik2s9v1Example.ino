@@ -42,15 +42,13 @@ void setup() {
   //*** Start of implementation specific code
   
   // Setup encoders
-  TeensyQuadratureMotorEncoder* m0Encoder = new TeensyQuadratureMotorEncoder();
-  m0Encoder->begin(M0_PHASE_A_PIN, M0_PHASE_B_PIN);
-  TeensyQuadratureMotorEncoder* m1Encoder = new TeensyQuadratureMotorEncoder();
-  m1Encoder->begin(M1_PHASE_A_PIN, M1_PHASE_B_PIN);
+  TeensyQuadratureMotorEncoder* m0Encoder =
+      new TeensyQuadratureMotorEncoder(M0_PHASE_A_PIN, M0_PHASE_B_PIN);
+  TeensyQuadratureMotorEncoder* m1Encoder =
+      new TeensyQuadratureMotorEncoder(M1_PHASE_A_PIN, M1_PHASE_B_PIN);
     
   // Setup the motor manager
-  PololuQik2s9v1MotorManager* pololuQikMotorManager = new PololuQik2s9v1MotorManager();
-  pololuQikMotorManager->begin(POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
-  motorManager = (MotorAndEncoderManager*)pololuQikMotorManager;
+  motorManager = new PololuQik2s9v1MotorManager(POLOLU_QIK_TX_PIN, POLOLU_QIK_RX_PIN, POLOLU_QIK_RESET_PIN);
   
   //*** End of implementation specific code
 
@@ -59,8 +57,8 @@ void setup() {
   m0Speed = 0;
   m1Speed = 0;
   motorManager->setMotorSpeeds(m0Speed, m1Speed);
-  motorManager->writeToEncoder(M0, 0);
-  motorManager->writeToEncoder(M1, 0);
+  motorManager->readAndResetEncoder(M0);
+  motorManager->readAndResetEncoder(M1);
   m0IncrementDir = false; // forward
   m1IncrementDir = true; // reverse
 }

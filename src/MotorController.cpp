@@ -3,6 +3,7 @@
 // See accompanying LICENSE file for details.
 //
 
+// Arduino includes
 #include <Arduino.h>
 
 // Local includes
@@ -40,11 +41,13 @@ void MotorController::start() {
   m0Output = 0.0;
   m0LastSpeed = 0.0;
   m0LastEncoder = 0;
+  
   m1Setpoint = 0.0;
   m1Input = 0.0;
   m1Output = 0.0;
   m1LastSpeed = 0.0;
   m1LastEncoder = 0;
+  
   _lastEncoderReadTime = millis();
   
   // Start active control
@@ -68,8 +71,14 @@ bool MotorController::adjustSpeeds() {
     return false;
   }
   
-  // Read the current time and encoder values
+  // Read the current time
   uint32_t currentTime = millis();
+  // If no time has passed since last call, exit early
+  if (currentTime - _lastEncoderReadTime == 0) {
+    return false;
+  }
+  
+  // Read the current time and encoder values
   int32_t encoderM0 = _motorManager->readEncoder(M0);
   int32_t encoderM1 = _motorManager->readEncoder(M1);
 
@@ -94,11 +103,11 @@ bool MotorController::adjustSpeeds() {
     m1LastSpeed = min(max(m1LastSpeed + m1Output, -_maxRadiansPerSecond), _maxRadiansPerSecond);
     changeMotorSpeeds = true;
   }
-
+  
   // If the pids adjusted the motor speeds, apply the new speeds to the motor
   if (changeMotorSpeeds) {
     // Set the new speeds, converting them to a value between -1 and 1
-    _motorManager->setMotorSpeeds((float)(m0LastSpeed/_maxRadiansPerSecond), (float)(m1LastSpeed/_maxRadiansPerSecond));
+    _motorManager->setMotorSpeeds(m0LastSpeed/_maxRadiansPerSecond, m1LastSpeed/_maxRadiansPerSecond);
   }
 
   // Remember time and encoder values for next call

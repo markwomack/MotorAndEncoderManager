@@ -12,8 +12,8 @@
 // Third party includes
 #include <PID_v1.h>
 
-// My includes
-#include <MotorAndEncoderManager.h>
+// Local includes
+#include "MotorAndEncoderManager.h"
 
 /*
  * The MotorController class adds a control layer that
@@ -69,7 +69,7 @@ class MotorController {
     /*
      * The desired speed of the robot in radians/second.
      */
-    void setDesiredSpeeds(double m0MotorSpeed, double m1MotorSpeed);
+    void setDesiredSpeeds(const double m0MotorSpeed, const double m1MotorSpeed);
     
     /*
      * Must be called periodically by the robot so that the motor speeds

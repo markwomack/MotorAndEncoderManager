@@ -64,8 +64,8 @@ void setup() {
   m0Speed = 0;
   m1Speed = 0;
   motorManager->setMotorSpeeds(m0Speed, m1Speed);
-  motorManager->writeToEncoder(M0, 0);
-  motorManager->writeToEncoder(M1, 0);
+  motorManager->readAndResetEncoder(M0);
+  motorManager->readAndResetEncoder(M1);
   m0IncrementDir = false; // forward
   m1IncrementDir = true; // reverse
 }
