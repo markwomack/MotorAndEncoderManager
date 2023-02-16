@@ -10,7 +10,6 @@
 #include <inttypes.h>
 
 // Local includes
-#include "MotorAndEncoderManager.h"
 #include "MotorEncoder.h"
 
 enum Direction {
