@@ -14,6 +14,6 @@
       "maintainer": true
     },
     "homepage": "https://github.com/markwomack/MotorAndEncoderManager",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "frameworks": "arduino"
   }
