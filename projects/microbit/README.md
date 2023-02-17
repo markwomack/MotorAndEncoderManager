@@ -1,5 +1,6 @@
 # micro:bit
 [ CURRENTLY A WORK-IN-PROGRESS]
+
 This project will demonstrate how to build a simple mobile differential robot using the
 commonly available [micro:bit board](https://microbit.org/). I wish I had one of these
 boards when I was a kid. They are just chock full of sensors and a powerful processor
@@ -10,10 +11,11 @@ robot. Below is a shopping list (with links) for the items this project will use
 endeavored to keep the cost under $100 US dollars, including the micro:bit board. Most
 of the items are sourced through [Sparkfun](https://www.sparkfun.com/) as it makes it
 easier to get everything from one place. I don't get any kickbacks from Sparkfun, I
-just think they are a great source for electronic and robotic components. You are free
-to buy these parts from someplace else. Some are specific to Sparkfun (like the motor
-driver), so if you substitute for something else you'll probably need to do some extra
-work.
+just think they are a great source for electronic and robotic components, and they
+have almost everything you need for this project. You are free to buy these parts from
+someplace else. Some are specific to Sparkfun (like the motor driver), so if you
+substitute for something else you'll probably need to do some extra work (but that is
+always part of the fun!).
 
 - [micro:bit kit](https://www.sparkfun.com/products/17288) - In case you don't already
   have a micro:bit, this kit will get you started. ($18.50)
