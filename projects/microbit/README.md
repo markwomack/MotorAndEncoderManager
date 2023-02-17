@@ -15,7 +15,7 @@ just think they are a great source for electronic and robotic components, and th
 have almost everything you need for this project. You are free to buy these parts from
 someplace else. Some are specific to Sparkfun (like the motor driver), so if you
 substitute for something else you'll probably need to do some extra work (but that is
-always part of the fun!).
+always part of the fun!). [Prices are as of Feb 17 2023]
 
 - [micro:bit kit](https://www.sparkfun.com/products/17288) - In case you don't already
   have a micro:bit, this kit will get you started. ($18.50)
@@ -25,12 +25,14 @@ always part of the fun!).
 - [breadboard](https://www.sparkfun.com/products/12615) - If you don't already have a
   breadboard, this is a nice one to have. We will need a single full size breadboard
   for this project. ($6.50)
+- [jumper wires](https://www.sparkfun.com/products/14284) - To go with the breadboard,
+  we will use these to connect the components together. ($2.75)
 - [motors](https://www.sparkfun.com/products/13302) - This is a pair of inexpensive
   hobby motors that will be used for the robot. ($5.50)
 - [wheels](https://www.sparkfun.com/products/13259) - Some basic wheels that attach to
   the motors. ($3.50)
-- [wheel encoder kit] - These encoders can be added to the motors to sense how far the
-  wheels have turned. ($13.50)
+- [wheel encoder kit](https://www.sparkfun.com/products/12629) - These encoders can
+  be added to the motors to sense how far the wheels have turned. ($13.95)
 - [motor driver](https://www.sparkfun.com/products/14450) - This sinple motor driver
   powers the motors and allows for speed and direction control. ($9.95)
 - [battery holder](https://www.sparkfun.com/products/12083) - A battery holder for 4
