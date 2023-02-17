@@ -1,16 +1,24 @@
 # micro:bit
 [CURRENTLY A WORK-IN-PROGRESS]
 
+## Introduction
 This project will demonstrate how to build a simple mobile differential robot using the
 commonly available [micro:bit board](https://microbit.org/). I wish I had one of these
 boards when I was a kid. They are just chock full of sensors and a powerful processor
 to run it all.
 
+This project is not a 'single board' solution. You will be assembling and connecting
+the various components. You will get your hands 'dirty.' It is meant to demonstrate
+what parts are fundamentally needed for almost any mobile differential robot. 
+'Differential' is just a fancy word for two-wheeled robot.
+
 This project does not require any soldering, 3D printing, or custom PCB creation. The
-aim is to put the various components together with just simple wires and prototyping
+aim is to put the various components together with just simple jumpers and prototyping
 breadboards. If you have access to more sophisticated tools then by all means feel
 free to use them, but they are not required. A piece of cardboard and some hot glue
 will go a long way for this project.
+
+## Parts List
 
 In addition to the micro:bit board, more hardware will be required in order to build the
 robot. Below is a shopping list (with links) for the items this project will use. I've
