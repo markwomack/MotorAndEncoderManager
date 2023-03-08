@@ -3,6 +3,18 @@
 // See accompanying LICENSE file for details.
 //
 
+// Expected three phase square wave signals
+//               ___________
+// V ___________|           |_________
+//       ___________             _____
+// W ___|           |___________|
+//   _______             ___________
+// U        |___________|           |_
+//  ^   ^   ^   ^   ^   ^   ^   ^   ^
+//  0   0   0   1   1   1   0   0   0 ...
+//  0   1   1   1   0   0   0   1   1 ...
+//  1   1   0   0   0   1   1   1   0 ...
+//                          ^-- pattern repeats
 // V W U
 // 0 0 0 INVALID, can never reach this state
 // 0 0 1 = 1  <-these values are populated in the CWNEXTSTATE and
