@@ -5,7 +5,7 @@
 
 // This is an example of using the motor controller with two motors,
 // each with an associated encoder. It has code to intialize either the
-// Pololu Oik or Ghost motor controllers.
+// Pololu Qik or Ghost motor controllers.
 // You can use this sketch to set the motor and controller setup on
 // your robot to make sure the encoder values are increasing and
 // decreasing correctly.
@@ -46,6 +46,10 @@ const uint8_t M1_SPEED_PIN(14);
 // Motor and encoder manager
 MotorAndEncoderManager* motorManager;
 
+// Motor encoders
+MotorEncoder* m0Encoder = 0;
+MotorEncoder* m1Encoder = 0;
+  
 float m0Speed;
 float m1Speed;
 bool m0IncrementDir;
@@ -66,14 +70,15 @@ enum ControllerType {
   GHOST
 };
 
-void setupMotorManager(const ControllerType controllerType) {
+// Change this constant to the controller type
+// to be used.
+const ControllerType CONTROLLER_TYPE(GHOST);
 
-MotorEncoder* m0Encoder = 0;
-MotorEncoder* m1Encoder = 0;
+void setupMotorManager() {
 
   //*** Start of implementation specific code
 
-  switch (controllerType) {
+  switch (CONTROLLER_TYPE) {
     case POLOLU_QIK:
     {
       // Setup the encoders
@@ -128,7 +133,7 @@ void setup() {
 
   // Example using Pololu Qik, but you can change the
   // the ControllerType passed to this method.
-  setupMotorManager(POLOLU_QIK);
+  setupMotorManager();
   
   m0Speed = 0;
   m1Speed = 0;
@@ -140,8 +145,8 @@ void setup() {
 }
 
 void loop() {
-  // If at max speed, positive or negative, switch increment
-  // direction to slot the motor down
+  // If at max speed, forward or reverse, switch increment
+  // direction to slow the motor down
   if (abs(m0Speed) >= maxSpeed) {
     m0IncrementDir = !m0IncrementDir;
     Serial.print("Switching m0 increment direction: ");
@@ -185,15 +190,24 @@ void loop() {
   Serial.print(m0Speed);
   Serial.print(", M1 speed: ");
   Serial.println(m1Speed);
-  
+
   Serial.print("M0 ticks: ");
   Serial.print(motorManager->readEncoder(M0));
   Serial.print("(values should be ");
   Serial.print(m0Speed >= 0 ? "increasing)" : "decreasing)");
+  if (CONTROLLER_TYPE == GHOST) {
+    Serial.print(", faults: ");
+    Serial.print(((ThreePhaseMotorEncoder*)m0Encoder)->readFaults());
+  }
   Serial.print(", M1 ticks: ");
   Serial.print(motorManager->readEncoder(M1));
   Serial.print("(values should be ");
-  Serial.println(m1Speed >= 0 ? "increasing)" : "decreasing)");
+  Serial.print(m1Speed >= 0 ? "increasing)" : "decreasing)");
+  if (CONTROLLER_TYPE == GHOST) {
+    Serial.print(", faults: ");
+    Serial.print(((ThreePhaseMotorEncoder*)m1Encoder)->readFaults());
+  }
+  Serial.println();
 
   // See you again in a half second
   delay(500);
