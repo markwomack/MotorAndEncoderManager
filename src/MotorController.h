@@ -10,7 +10,7 @@
 #include <inttypes.h>
 
 // Third party includes
-#include <PID_v1.h>
+#include <InstrumentedPID.h>
 
 // Local includes
 #include "MotorAndEncoderManager.h"
@@ -57,7 +57,13 @@ class MotorController {
     void start();
     
     /*
-     * Stops the active control of the motors.
+     * Stops the active control of the motors. Does not attempt to stop the
+     * motors.
+     */
+    void disengage();
+    
+    /*
+     * Stops the active control of the motors and stops the motors abruptly.
      */
     void stop();
     
@@ -67,7 +73,7 @@ class MotorController {
     bool isRunning();
     
     /*
-     * The desired speed of the robot in radians/second.
+     * The desired speed of the robot value should be in radians/second.
      */
     void setDesiredSpeeds(const double m0MotorSpeed, const double m1MotorSpeed);
     
@@ -94,16 +100,16 @@ class MotorController {
     double m0Setpoint;      // The desired speed in radians/second
     double m0Input;         // input used by the PID
     double m0Output;        // Output from the PID Compute method
-    double m0LastSpeed;     // The last speed that was set for the motor in radians/second
+    double m0LastSpeed;     // The last speed that was set in radians/second
     int32_t m0LastEncoder;  // The last encoder reading
-    PID* m0Pid;             // The PID doing the control calculations
+    InstrumentedPID* m0Pid; // The PID doing the control calculations
     
     double m1Setpoint;
     double m1Input;
     double m1Output;
     double m1LastSpeed;
     int32_t m1LastEncoder;
-    PID* m1Pid;
+    InstrumentedPID* m1Pid;
     
     // The last time the encoders were read
     uint32_t _lastEncoderReadTime;

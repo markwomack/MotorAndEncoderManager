@@ -22,14 +22,14 @@ MotorController::MotorController(MotorAndEncoderManager* motorManager, const dou
 
   _radiansPerTick = radiansPerTick;
   _maxRadiansPerSecond = maxRadiansPerSecond;
-
-  m0Pid = new PID(&m0Input, &m0Output, &m0Setpoint, _Kp, _Ki, _Kd, DIRECT);
-  m0Pid->SetSampleTime(frequency);
-  m0Pid->SetOutputLimits(-maxRadiansPerSecond, maxRadiansPerSecond);
   
-  m1Pid = new PID(&m1Input, &m1Output, &m1Setpoint, _Kp, _Ki, _Kd, DIRECT);
-  m1Pid->SetSampleTime(frequency);
-  m1Pid->SetOutputLimits(-maxRadiansPerSecond, maxRadiansPerSecond);
+  m0Pid = new InstrumentedPID(_Kp, _Ki, _Kd, DIRECT);
+  m0Pid->setSampleTime(frequency);
+  m0Pid->setOutputLimits(-_maxRadiansPerSecond, _maxRadiansPerSecond);
+  
+  m1Pid = new InstrumentedPID(_Kp, _Ki, _Kd, DIRECT);
+  m1Pid->setSampleTime(frequency);
+  m1Pid->setOutputLimits(-_maxRadiansPerSecond, _maxRadiansPerSecond);
 }
 
 void MotorController::start() {
@@ -51,8 +51,8 @@ void MotorController::start() {
   _lastEncoderReadTime = millis();
   
   // Start active control
-  m0Pid->SetMode(AUTOMATIC);
-  m1Pid->SetMode(AUTOMATIC);
+  m0Pid->start(m0Input, m0Output);
+  m1Pid->start(m1Input, m1Output);
   _isRunning = true;
 }
 
@@ -61,8 +61,8 @@ bool MotorController::isRunning() {
 }
 
 void MotorController::setDesiredSpeeds(const double m0Speed, const double m1Speed) {
-  m0Setpoint = m0Speed;
-  m1Setpoint = m1Speed;
+  m0Setpoint = min(max(m0Speed, -_maxRadiansPerSecond), _maxRadiansPerSecond);
+  m1Setpoint = min(max(m1Speed, -_maxRadiansPerSecond), _maxRadiansPerSecond);;
 }
 
 bool MotorController::adjustSpeeds() {
@@ -87,26 +87,28 @@ bool MotorController::adjustSpeeds() {
   double diffM1 = static_cast<double>(encoderM1 - m1LastEncoder) * _radiansPerTick;
   double diffTime = (currentTime - _lastEncoderReadTime)/1000.0;
 
-  // Calculate the current speed in radians/second and use as input to the PID Compute
+  // Calculate the current speed in radians/second and divide that by the max
+  // radians per second to get a value for velocity in radians/second.
   m0Input = (diffM0/diffTime);
   m1Input = (diffM1/diffTime);
 
   // Run the new values through the pids
   bool changeMotorSpeeds = false;
-  if (m0Pid->Compute()) {
+  if (m0Pid->compute(m0Input, m0Setpoint, &m0Output)) {
     // Compute made an adjustment, use the output to calculate the new speed
     m0LastSpeed = min(max(m0LastSpeed + m0Output, -_maxRadiansPerSecond), _maxRadiansPerSecond);
     changeMotorSpeeds = true;
   }
-  if (m1Pid->Compute()) {
+  if (m1Pid->compute(m1Input, m1Setpoint, &m1Output)) {
     // Compute made an adjustment, use the output to calculate the new speed
     m1LastSpeed = min(max(m1LastSpeed + m1Output, -_maxRadiansPerSecond), _maxRadiansPerSecond);
     changeMotorSpeeds = true;
   }
   
-  // If the pids adjusted the motor speeds, apply the new speeds to the motor
+  // If the pids adjusted the motor speeds, apply the new speeds to the motor with a values
+  // between -1 and 1.
   if (changeMotorSpeeds) {
-    // Set the new speeds, converting them to a value between -1 and 1
+    // Set the new speeds
     _motorManager->setMotorSpeeds(m0LastSpeed/_maxRadiansPerSecond, m1LastSpeed/_maxRadiansPerSecond);
   }
 
@@ -118,10 +120,14 @@ bool MotorController::adjustSpeeds() {
   return changeMotorSpeeds;
 }
 
+void MotorController::disengage() {
+  _isRunning = false;
+  m0Pid->stop();
+  m1Pid->stop();
+}
+
 void MotorController::stop() {
+  disengage();
   // Stop the motors and stop active control
   _motorManager->setMotorSpeeds(0, 0);
-  _isRunning = false;
-  m0Pid->SetMode(MANUAL);
-  m1Pid->SetMode(MANUAL);
 }
