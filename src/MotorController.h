@@ -14,6 +14,7 @@
 
 // Local includes
 #include "MotorAndEncoderManager.h"
+#include "MotorPID.h"
 
 /*
  * The MotorController class adds a control layer that
@@ -47,8 +48,8 @@ class MotorController {
      *
      *  Typically the frequency should be a value less than the interval the adjustSpeeds method is called.
      */
-    MotorController(MotorAndEncoderManager* motorManager, const double Kp, const double Ki, const double Kd,
-      const uint16_t frequency, const double radiansPerTick, const double maxRadiansPerSecond);
+    MotorController(MotorAndEncoderManager* motorManager, MotorPID* m0MotorPID, MotorPID* m1MotorPID,
+      const uint32_t frequency, const double radiansPerTick, const double maxRadiansPerSecond);
       
     /*
      * Starts the active control of the motors to match the desired speeds
@@ -84,14 +85,12 @@ class MotorController {
      * are taken. Returns true if the motor speeds were adjusted.
      */
     bool adjustSpeeds();
+    
+    double getLastM0SetSpeed();
+    double getLastM1SetSpeed();
 
   private:
     bool _isRunning;
-    
-    // Parameters for the PID calculations
-    double _Kp;
-    double _Ki;
-    double _Kd;
 
     // Specifc to the motors on the robot
     double _radiansPerTick;      // Number of radians per tick of the encoder
@@ -102,14 +101,14 @@ class MotorController {
     double m0Output;        // Output from the PID Compute method
     double m0LastSpeed;     // The last speed that was set in radians/second
     int32_t m0LastEncoder;  // The last encoder reading
-    InstrumentedPID* m0Pid; // The PID doing the control calculations
+    MotorPID* m0Pid;        // The PID doing the control calculations
     
     double m1Setpoint;
     double m1Input;
     double m1Output;
     double m1LastSpeed;
     int32_t m1LastEncoder;
-    InstrumentedPID* m1Pid;
+    MotorPID* m1Pid;
     
     // The last time the encoders were read
     uint32_t _lastEncoderReadTime;

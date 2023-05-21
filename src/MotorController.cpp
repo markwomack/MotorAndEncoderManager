@@ -6,28 +6,27 @@
 // Arduino includes
 #include <Arduino.h>
 
+#include <DebugMsgs.h>
+
 // Local includes
 #include "MotorController.h"
+#include "MotorPID.h"
 
-MotorController::MotorController(MotorAndEncoderManager* motorManager, const double Kp, const double Ki, const double Kd,
-    const uint16_t frequency, const double radiansPerTick, const double maxRadiansPerSecond) {
+MotorController::MotorController(MotorAndEncoderManager* motorManager, MotorPID* m0MotorPID, MotorPID* m1MotorPID,
+    const uint32_t frequency, const double radiansPerTick, const double maxRadiansPerSecond) {
     
   _motorManager = motorManager;
   
   _isRunning = false;
-  
-  _Kp = Kp;
-  _Ki = Ki;
-  _Kd = Kd;
 
   _radiansPerTick = radiansPerTick;
   _maxRadiansPerSecond = maxRadiansPerSecond;
   
-  m0Pid = new InstrumentedPID(_Kp, _Ki, _Kd, DIRECT);
+  m0Pid = m0MotorPID;
   m0Pid->setSampleTime(frequency);
   m0Pid->setOutputLimits(-_maxRadiansPerSecond, _maxRadiansPerSecond);
   
-  m1Pid = new InstrumentedPID(_Kp, _Ki, _Kd, DIRECT);
+  m1Pid = m1MotorPID;
   m1Pid->setSampleTime(frequency);
   m1Pid->setOutputLimits(-_maxRadiansPerSecond, _maxRadiansPerSecond);
 }
@@ -108,6 +107,7 @@ bool MotorController::adjustSpeeds() {
   // If the pids adjusted the motor speeds, apply the new speeds to the motor with a values
   // between -1 and 1.
   if (changeMotorSpeeds) {
+    DebugMsgs.debug().printfln("Setting motor speeds: %.4f, %.4f", m0LastSpeed/_maxRadiansPerSecond, m0LastSpeed/_maxRadiansPerSecond);
     // Set the new speeds
     _motorManager->setMotorSpeeds(m0LastSpeed/_maxRadiansPerSecond, m1LastSpeed/_maxRadiansPerSecond);
   }
@@ -131,3 +131,12 @@ void MotorController::stop() {
   // Stop the motors and stop active control
   _motorManager->setMotorSpeeds(0, 0);
 }
+
+double MotorController::getLastM0SetSpeed() {
+  return m0LastSpeed;
+}
+
+double MotorController::getLastM1SetSpeed() {
+  return m1LastSpeed;
+}
+    

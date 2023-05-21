@@ -11,6 +11,7 @@
 #include "src/MotorController.h"
 #include "src/PololuQik2s9v1MotorManager.h"
 #include "src/TeensyQuadratureMotorEncoder.h"
+#include "src/RampedMotorPID.h"
 
 // This is a example of using the MotorController class with a
 // specific motor. Please see the README for the details of the
@@ -94,7 +95,9 @@ void setup() {
   TeensyQuadratureMotorEncoder* rightEncoder =
       new TeensyQuadratureMotorEncoder(M1_PHASE_A_PIN, M1_PHASE_B_PIN);
   motorManager->setEncoders(leftEncoder, rightEncoder);
-      
+
+  MotorPID* m0MotorPID = new RampedMotorPID(0.1);
+  MotorPID* m1MotorPID = new RampedMotorPID(0.1);
   //*** End of implementation specific code
 
   // Now set up the MotorController
@@ -106,7 +109,7 @@ void setup() {
   Serial.print("CRUISE_SPEED: ");
   Serial.println(CRUISE_SPEED);
 
-  motorController = new MotorController(motorManager, KP, KI, KD, 50, RADIANS_PER_TICK, MAX_RADIANS_PER_SECOND);
+  motorController = new MotorController(motorManager, m0MotorPID, m1MotorPID, 50, RADIANS_PER_TICK, MAX_RADIANS_PER_SECOND);
   motorController->start();
 }
 
