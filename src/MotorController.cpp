@@ -86,30 +86,44 @@ bool MotorController::adjustSpeeds() {
   double diffM1 = static_cast<double>(encoderM1 - m1LastEncoder) * _radiansPerTick;
   double diffTime = (currentTime - _lastEncoderReadTime)/1000.0;
 
-  // Calculate the current speed in radians/second and divide that by the max
-  // radians per second to get a value for velocity in radians/second.
+  // Calculate the current speed in radians/second.
   m0Input = (diffM0/diffTime);
   m1Input = (diffM1/diffTime);
 
+  DebugMsgs.debug().printfln("Current measured speeds: %.4f (%.4f), %.4f (%.4f)",
+    m0Input, m0Input/_maxRadiansPerSecond, m1Input, m1Input/_maxRadiansPerSecond);
+  DebugMsgs.debug().printfln("Desired speeds: %.4f (%.4f), %.4f (%.4f)",
+    m0Setpoint, m0Setpoint/_maxRadiansPerSecond, m1Setpoint, m1Setpoint/_maxRadiansPerSecond);
+  
   // Run the new values through the pids
   bool changeMotorSpeeds = false;
   if (m0Pid->compute(m0Input, m0Setpoint, &m0Output)) {
+    //DebugMsgs.debug().printfln("m0 adjustment: %.4f", m0Output);
     // Compute made an adjustment, use the output to calculate the new speed
     m0LastSpeed = min(max(m0LastSpeed + m0Output, -_maxRadiansPerSecond), _maxRadiansPerSecond);
+    if (m0Setpoint == 0 && abs(m0LastSpeed) < .05) {
+      m0LastSpeed = 0;
+    }
     changeMotorSpeeds = true;
   }
   if (m1Pid->compute(m1Input, m1Setpoint, &m1Output)) {
+    //DebugMsgs.debug().printfln("m1 adjustment: %.4f", m1Output);
     // Compute made an adjustment, use the output to calculate the new speed
     m1LastSpeed = min(max(m1LastSpeed + m1Output, -_maxRadiansPerSecond), _maxRadiansPerSecond);
+    if (m1Setpoint == 0 && abs(m1LastSpeed) < .05) {
+      m1LastSpeed = 0;
+    }
     changeMotorSpeeds = true;
   }
   
   // If the pids adjusted the motor speeds, apply the new speeds to the motor with a values
   // between -1 and 1.
   if (changeMotorSpeeds) {
-    DebugMsgs.debug().printfln("Setting motor speeds: %.4f, %.4f", m0LastSpeed/_maxRadiansPerSecond, m0LastSpeed/_maxRadiansPerSecond);
+    double m0Speed = m0LastSpeed/_maxRadiansPerSecond;
+    double m1Speed = m1LastSpeed/_maxRadiansPerSecond;
+    DebugMsgs.debug().printfln("Setting motor speeds: %.4f (%.4f), %.4f (%.4f)", m0LastSpeed, m0Speed, m1LastSpeed, m1Speed);
     // Set the new speeds
-    _motorManager->setMotorSpeeds(m0LastSpeed/_maxRadiansPerSecond, m1LastSpeed/_maxRadiansPerSecond);
+    _motorManager->setMotorSpeeds(m0Speed, m1Speed);
   }
 
   // Remember time and encoder values for next call

@@ -12,11 +12,14 @@ class RampedMotorPID : public MotorPID {
   public:
     RampedMotorPID(double maxIncrement) : MotorPID(0, 0, 0) {
       _isRunning = false;
+      _sampleTime = 100; // default is 100ms
       _maxIncrement = maxIncrement;
+      _maxComputeIncrement = _maxIncrement/(1000.0/(double)_sampleTime);
     };
     
     virtual void setSampleTime(uint32_t sampleTime) {
       _sampleTime = sampleTime;
+      _maxComputeIncrement = _maxIncrement/(1000.0/(double)_sampleTime);
     };
     
     virtual void setOutputLimits(double outputMin, double outputMax) {
@@ -42,7 +45,9 @@ class RampedMotorPID : public MotorPID {
       // setpoint = target speed in radians/second
       
       double diff = setpoint - input;
-      double increment = (diff >= 0) ? min(_maxIncrement, diff) : max(-_maxIncrement, diff);
+      double increment = (diff >= 0) ? min(_maxComputeIncrement, diff) : max(-_maxComputeIncrement, diff);
+      DebugMsgs.debug().printfln("diff: %.8f, increment: %.8f, output: %.8f",
+        diff, increment, min(max(increment, _outputMin), _outputMax));
       *returnOutput = min(max(increment, _outputMin), _outputMax);
       _lastComputeTime = millis();
       return true;
@@ -55,6 +60,7 @@ class RampedMotorPID : public MotorPID {
   protected:
     bool _isRunning;
     double _maxIncrement;
+    double _maxComputeIncrement;
     double _outputMin;
     double _outputMax;
     uint32_t _sampleTime;
